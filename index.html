@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nuestra Próxima Aventura ✨</title>
+    <link rel="icon" type="image/png" href="logo.png" />
+    <link rel="apple-touch-icon" href="logo.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
@@ -97,6 +99,17 @@
             max-width: 600px;
             margin: 0 auto;
             font-weight: 600;
+        }
+
+        .logo-brujula {
+            width: 100px;
+            width: 150px;
+            height: auto;
+            margin: -20px auto 1rem auto;
+            margin: -30px auto 1rem auto;
+            display: block;
+            animation: spinCompass 25s linear infinite;
+            filter: drop-shadow(3px 3px 0px rgba(43, 62, 80, 0.2));
         }
 
         .bento-grid {
@@ -546,8 +559,9 @@
     <div class="container">
         <header>
             <span class="handwritten-note" style="top: -25px; right: 20px; transform: rotate(10deg);">¡Sorpresa! 💌</span>
-            <h1>Nuestra Próxima Aventura ✨</h1>
-            <p>Es hora de continuar nuestro viaje. Aquí tienes varias opciones... <br><span class="highlight-text">¡Ayudame a elegir!</span></p>
+            <img src="logo.png" alt="Brújula" class="logo-brujula">
+            <h1>Nuestra Próxima Aventura ✨<br><span style="font-size: 1.5rem; color: var(--terracota);">Sábado 12 de Septiembre</span></h1>
+            <p>Es hora de continuar nuestra bitácora. Aquí tienes varias opciones para ese día... <br><span class="highlight-text">¡Tú eliges el rumbo!</span></p>
         </header>
 
         <div class="bento-grid" id="bentoGrid">
