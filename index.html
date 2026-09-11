@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nuestra Próxima Aventura ✨</title>
-    <link rel="icon" type="image/png" href="logo1.png" />
-    <link rel="apple-touch-icon" href="logo1.png" />
+    <link rel="icon" type="image/png" href="logo.png" />
+    <link rel="apple-touch-icon" href="logo.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
@@ -102,10 +102,8 @@
         }
 
         .logo-brujula {
-            width: 100px;
             width: 150px;
             height: auto;
-            margin: -20px auto 1rem auto;
             margin: -30px auto 1rem auto;
             display: block;
             animation: spinCompass 25s linear infinite;
@@ -559,9 +557,9 @@
     <div class="container">
         <header>
             <span class="handwritten-note" style="top: -25px; right: 20px; transform: rotate(10deg);">¡Sorpresa! 💌</span>
-            <img src="logo1.png" alt="Brújula" class="logo-brujula">
+            <img src="logo.png" alt="Brújula" class="logo-brujula">
             <h1>Nuestra Próxima Aventura ✨<br><span style="font-size: 1.5rem; color: var(--terracota);">Sábado 12 de Septiembre</span></h1>
-            <p>Ya es la hora de continuar... Aquí tienes varias opciones para ese día: <br><span class="highlight-text">¡Tú eliges el rumbo!</span></p>
+            <p>Es hora de continuar nuestra bitácora. Aquí tienes varias opciones para ese día... <br><span class="highlight-text">¡Tú eliges el rumbo!</span></p>
         </header>
 
         <div class="bento-grid" id="bentoGrid">
@@ -646,6 +644,22 @@
                 </div>
                 <div class="img-container">
                     <img src="cali_date_doodles_watercolor.png" alt="Maracas y Lulo" class="watercolor-img">
+                </div>
+        </div>
+
+            <!-- Opción 6: Noche de Cine -->
+            <div class="bento-card card-cine" data-option="cine" data-label="Noche de Cine 🍿">
+                <div class="sticker-selected"><i data-lucide="heart"></i></div>
+                <div class="card-header-row">
+                    <span class="card-tag">Opción 6: Relax</span>
+                    <i data-lucide="film"></i>
+                </div>
+                <div>
+                    <h2>Noche de Película 🍿</h2>
+                    <p>Palomitas gigantes, golosinas y pantalla grande para disfrutar juntos.</p>
+                </div>
+                <div class="img-container">
+                    <img src="cine.png" alt="Cine y Palomitas" class="watercolor-img">
                 </div>
             </div>
 
@@ -781,6 +795,13 @@
                     // "¡Hola! Me encantó la invitación 💃. Elijo pintar nuestras cerámicas + clase de salsa en Lulo Bar 🍹. ¡Alista los pasos prohibidos! 🎉"
                     customMessage = "%C2%A1Hola!%20Me%20encant%C3%B3%20la%20invitaci%C3%B3n%20%F0%9F%92%83.%20Elijo%20pintar%20nuestras%20cer%C3%A1micas%20%2B%20clase%20de%20salsa%20en%20Lulo%20Bar%20%F0%9F%8D%B9.%20%C2%A1Alista%20los%20pasos%20prohibidos!%20%F0%9F%8E%89";
                     colorConfetti = ['#D4A297', '#2B3E50', '#EAE3D2'];
+                } else if (selectedKey === "cine") {
+                    modalIcon.innerHTML = `<img src="cine.png" class="modal-icon-img" alt="Cine y Palomitas">`;
+                    modalTitle.textContent = "¡Noche de Película! 🍿";
+                    modalDescription.textContent = `Palomitas gigantes, golosinas y nuestra película favorita en pantalla grande.`;
+                    // "¡Hola! Me encantó la invitación 🍿🎬. Elijo la noche de cine y palomitas 🎟️. ¡Coordinemos qué película vamos a ver! ✨"
+                    customMessage = "%C2%A1Hola!%20Me%20encant%C3%B3%20la%20invitaci%C3%B3n%20%F0%9F%8D%BF%F0%9F%8E%AC.%20Elijo%20la%20noche%20de%20cine%20y%20palomitas%20%F0%9F%8E%AB%EF%B8%8F.%20%C2%A1Coordinemos%20qu%C3%A9%20pel%C3%ADcula%20vamos%20a%20ver!%20%E2%9C%A8";
+                    colorConfetti = ['#E63946', '#F7D070', '#2B3E50'];
                 }
             } else {
                 modalIcon.innerHTML = `⚗️`;
