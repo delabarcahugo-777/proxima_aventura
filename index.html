@@ -260,10 +260,10 @@
 
         /* ----- ELEMENTOS DE MAPA DEL TESORO (Fondo) ----- */
         .adventure-bg {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
             pointer-events: none;
-            z-index: 1;
+            z-index: 0;
             overflow: hidden;
         }
         .adventure-bg svg {
@@ -498,6 +498,7 @@
             h1 { font-size: 2rem; }
             body { padding: 1.5rem 1rem; }
             .bento-card { min-height: 200px; padding: 1.5rem; }
+            .map-x { width: 60px !important; bottom: 8% !important; left: 8% !important; }
             
             .rsvp-panel {
                 position: sticky;
@@ -546,7 +547,7 @@
         <header>
             <span class="handwritten-note" style="top: -25px; right: 20px; transform: rotate(10deg);">¡Sorpresa! 💌</span>
             <h1>Nuestra Próxima Aventura ✨</h1>
-            <p>Es hora de continuar nuestra bitácora. Aquí tienes varias opciones para hoy... <br><span class="highlight-text">¡Tú eliges el rumbo!</span></p>
+            <p>Es hora de continuar nuestro viaje. Aquí tienes varias opciones... <br><span class="highlight-text">¡Ayudame a elegir!</span></p>
         </header>
 
         <div class="bento-grid" id="bentoGrid">
@@ -560,7 +561,7 @@
                 </div>
                 <div>
                     <h2>La Obra Maestra Inconclusa</h2>
-                    <p>Vamos al taller a darle los toques finales a nuestras piezas de cerámica. ¡Descubramos cómo quedaron tras el horno!</p>
+                    <p>Vamos al taller a darle los toques finales a nuestras piezas de cerámica.!</p>
                 </div>
                 <div class="img-container">
                     <img src="vacaydrag.png" alt="Dragón y Vaca" class="watercolor-img">
@@ -577,7 +578,7 @@
                 </div>
                 <div>
                     <h2>Una Noche en Seúl</h2>
-                    <p>Para sentirnos dentro de tu K-drama favorito en UriMuri.</p>
+                    <p>Para sentirnos dentro de tu K-drama favorito.</p>
                 </div>
                 <div class="img-container">
                     <img src="k-ramen.png" alt="Ramen" class="watercolor-img">
@@ -592,8 +593,8 @@
                     <i data-lucide="gauge"></i>
                 </div>
                 <div>
-                    <h2>Karts en Unicentro</h2>
-                    <p>Adrenalina y competencia sana en la pista de Superkarts.</p>
+                    <h2>¡Karts!</h2>
+                    <p>Adrenalina y competencia en la pista de Superkarts.</p>
                 </div>
                 <div class="img-container">
                     <img src="kart.png" alt="Kart" class="watercolor-img">
@@ -734,23 +735,23 @@
                 if (selectedKey === "ceramica") {
                     modalIcon.innerHTML = `<img src="vacaydrag.png" class="modal-icon-img" alt="Dragón y Vaca">`;
                     modalTitle.textContent = "¡Manos a la obra! 🏺";
-                    modalDescription.textContent = `Pintaremos nuestras cerámicas juntos.`;
+                    modalDescription.textContent = `Pintemos nuestras cerámicas juntos.`;
                     // Mensaje original (pre-codificado para evitar corrupción): "¡Hola! Me encantó la invitación 🐉🐄. Elijo terminar nuestras cerámicas. ¡Estoy lista para crear arte juntos! 🎨"
                     customMessage = "%C2%A1Hola!%20Me%20encant%C3%B3%20la%20invitaci%C3%B3n%20%F0%9F%90%89%F0%9F%90%84.%20Elijo%20terminar%20nuestras%20cer%C3%A1micas.%20%C2%A1Estoy%20lista%20para%20crear%20arte%20juntos!%20%F0%9F%8E%A8";
                     colorConfetti = ['#FF5D73', '#FFD6A5', '#B7E4C7'];
                 } else if (selectedKey === "kdrama") {
                     modalIcon.innerHTML = `<img src="k-ramen.png" class="modal-icon-img" alt="Ramen">`;
                     modalTitle.textContent = "¡Daebak! (대박) 🫰";
-                    modalDescription.textContent = `Una cena espectacular en UriMuri compartiendo un Ramen humeante.`;
+                    modalDescription.textContent = `Una cena espectacular compartiendo un Ramen humeante.`;
                     // "¡Hola! Me encantó la invitación!🫰. Elijo la cita estilo K-Drama y Ramen 🍜🇰🇷.  🫶"
                     customMessage = "%C2%A1Hola!%20Me%20encant%C3%B3%20la%20invitaci%C3%B3n%20%F0%9F%A5%BA.%20Elijo%20la%20cita%20estilo%20K-Drama%20y%20Ramen%20%F0%9F%8D%9C%F0%9F%87%B0%F0%9F%87%B7.%20%C2%A1Coordinemos%20qu%C3%A9%20d%C3%ADa%20vamos!%20%F0%9F%AB%B6";
                     colorConfetti = ['#A3B19B', '#2B3E50', '#FAF6F0'];
                 } else if (selectedKey === "karts") {
                     modalIcon.innerHTML = `<img src="kart.png" class="modal-icon-img" alt="Kart">`;
-                    modalTitle.textContent = "¡Acelera a Fondo! 🏁";
-                    modalDescription.textContent = `Nos vamos directo a tomar el volante en la pista de Superkarts Unicentro.`;
-                    // "¡Hola! Me encantó la invitación 🏎️. Elijo la carrera de Karts en Superkarts Unicentro 🏁. ¡Prepárate para perder! 😉"
-                    customMessage = "%C2%A1Hola!%20Me%20encant%C3%B3%20la%20invitaci%C3%B3n%20%F0%9F%8F%8E%EF%B8%8F.%20Elijo%20la%20carrera%20de%20Karts%20en%20Superkarts%20Unicentro%20%F0%9F%8F%81.%20%C2%A1Prep%C3%A1rate%20para%20perder!%20%F0%9F%98%89";
+                    modalTitle.textContent = "¡Acelera a Fondo! ";
+                    modalDescription.textContent = `Nos vamos directo a tomar el volante en la pista de Superkarts.`;
+                    // "¡Hola! Me encantó la invitación 🏎️. Elijo la carrera de Karts en Superkarts 🏁. ¡Prepárate para perder! 😉"
+                    customMessage = "%C2%A1Hola!%20Me%20encant%C3%B3%20la%20invitaci%C3%B3n%20%F0%9F%8F%8E%EF%B8%8F.%20Elijo%20la%20carrera%20de%20Karts%20en%20Superkarts%20%F0%9F%8F%81.%20%C2%A1Prep%C3%A1rate%20para%20perder!%20%F0%9F%98%89";
                     colorConfetti = ['#F7D070', '#2B3E50', '#D4A297'];
                 } else if (selectedKey === "minigolf") {
                     modalIcon.innerHTML = `<img src="minigolf.png" class="modal-icon-img" alt="Minigolf">`;
