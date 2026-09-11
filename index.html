@@ -270,17 +270,25 @@
             position: absolute;
             opacity: 0.5;
         }
-        .map-path {
-            width: 300px;
-            animation: dashDraw 12s linear infinite;
+        .map-path-full {
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1;
         }
-        @keyframes dashDraw {
-            from { stroke-dashoffset: 100; }
+        .map-path-line {
+            animation: dashDrawFull 300s linear infinite;
+        }
+        @keyframes dashDrawFull {
+            from { stroke-dashoffset: 500; }
             to { stroke-dashoffset: 0; }
         }
         .map-x {
-            width: 50px;
+            width: 80px;
             animation: pulseX 2s infinite;
+            opacity: 1 !important;
+            z-index: 3 !important;
         }
         @keyframes pulseX {
             0%, 100% { transform: scale(1) rotate(-10deg); }
@@ -506,19 +514,17 @@
 
     <!-- Elementos de Mapa del Tesoro / Aventura en el fondo -->
     <div class="adventure-bg">
-        <!-- Camino punteado 1 -->
-        <svg class="map-path" viewBox="0 0 200 100" style="top: 15%; left: -2%;">
-            <path d="M0,50 Q50,0 100,50 T200,50" fill="none" stroke="var(--terracota)" stroke-width="3" stroke-linecap="round" stroke-dasharray="6,8" />
+        <!-- SVG de pantalla completa (Líneas punteadas animadas de mapa del tesoro) -->
+        <svg class="map-path-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <path class="map-path-line" d="M5,10 Q30,40 50,20 T90,50 Q70,80 50,90 T10,75" fill="none" stroke="var(--terracota)" stroke-width="0.5" stroke-linecap="round" stroke-dasharray="1.5,2.5" />
         </svg>
-        <!-- Camino punteado 2 -->
-        <svg class="map-path" viewBox="0 0 200 100" style="top: 60%; right: -5%; transform: rotate(35deg);">
-            <path d="M0,80 Q50,20 100,80 T200,80" fill="none" stroke="var(--azul-deporte)" stroke-width="3" stroke-linecap="round" stroke-dasharray="6,8" />
-        </svg>
-        <!-- X marca el lugar -->
-        <svg class="map-x" viewBox="0 0 100 100" style="bottom: 15%; left: 8%;">
-            <line x1="20" y1="20" x2="80" y2="80" stroke="#E63946" stroke-width="8" stroke-linecap="round"/>
-            <line x1="80" y1="20" x2="20" y2="80" stroke="#E63946" stroke-width="8" stroke-linecap="round"/>
-        </svg>
+        
+        <!-- X marca el lugar (Rediseñada para visibilidad) -->
+        <svg class="map-x" viewBox="0 0 120 120" style="bottom: 22%; left: 8%;">
+            <circle cx="60" cy="60" r="50" fill="none" stroke="#E63946" stroke-width="4" stroke-dasharray="8,8" opacity="0.6"/>
+            <line x1="30" y1="30" x2="90" y2="90" stroke="#E63946" stroke-width="10" stroke-linecap="round"/>
+            <line x1="90" y1="30" x2="30" y2="90" stroke="#E63946" stroke-width="10" stroke-linecap="round"/>
+        </svg
         <!-- Señal de vía -->
         <svg class="map-sign" viewBox="0 0 100 100" style="top: 35%; right: 4%;">
             <rect x="45" y="40" width="10" height="60" fill="var(--txt-tinta)" />
@@ -639,7 +645,20 @@
         </div>
     </div>
 
-    <!-- Modal removido: el botón ahora redirige directamente a WhatsApp -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal" id="celebrationModal">
+            <button class="close-modal" id="btnCloseModal">
+                <i data-lucide="x" style="width: 32px; height: 32px;"></i>
+            </button>
+            <div class="modal-icon-container" id="modalIcon">❤️</div>
+            <h2 id="modalTitle">¡Trato Hecho!</h2>
+            <p id="modalDescription">Estoy ansioso por compartir esta aventura contigo.</p>
+            <a href="#" class="btn-whatsapp" id="btnWhatsapp" target="_blank">
+                <span>Enviar respuesta por WhatsApp</span>
+                <i data-lucide="message-circle"></i>
+            </a>
+        </div>
+    </div>
 
     <script>
         lucide.createIcons();
@@ -648,6 +667,14 @@
         const bentoGrid = document.getElementById('bentoGrid');
         const btnRsvp = document.getElementById('btnRsvp');
         const rsvpPrompt = document.getElementById('rsvpPrompt');
+        
+        // Modal elements
+        const modalOverlay = document.getElementById('modalOverlay');
+        const btnCloseModal = document.getElementById('btnCloseModal');
+        const btnWhatsapp = document.getElementById('btnWhatsapp');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalDescription = document.getElementById('modalDescription');
+        const modalIcon = document.getElementById('modalIcon');
 
         const triggerMiniConfetti = (e) => {
             const rect = e.target.closest('.bento-card').getBoundingClientRect();
@@ -699,19 +726,79 @@
             const selectedCards = Array.from(document.querySelectorAll('.bento-card.selected'));
             if (selectedCards.length === 0) return;
 
-            // Extraer los nombres de las tarjetas seleccionadas
-            const selectedNames = selectedCards.map(c => c.getAttribute('data-label')).join(', ');
+            let customMessage = "";
+            let colorConfetti = ['#FF5D73', '#FFD6A5', '#B7E4C7'];
+
+            if (selectedCards.length === 1) {
+                const selectedKey = selectedCards[0].getAttribute('data-option');
+                if (selectedKey === "ceramica") {
+                    modalIcon.innerHTML = `<img src="vacaydrag.png" class="modal-icon-img" alt="Dragón y Vaca">`;
+                    modalTitle.textContent = "¡Manos a la obra! 🏺";
+                    modalDescription.textContent = `Pintaremos nuestras cerámicas juntos.`;
+                    // Mensaje original (pre-codificado para evitar corrupción): "¡Hola! Me encantó la invitación 🐉🐄. Elijo terminar nuestras cerámicas. ¡Estoy lista para crear arte juntos! 🎨"
+                    customMessage = "%C2%A1Hola!%20Me%20encant%C3%B3%20la%20invitaci%C3%B3n%20%F0%9F%90%89%F0%9F%90%84.%20Elijo%20terminar%20nuestras%20cer%C3%A1micas.%20%C2%A1Estoy%20lista%20para%20crear%20arte%20juntos!%20%F0%9F%8E%A8";
+                    colorConfetti = ['#FF5D73', '#FFD6A5', '#B7E4C7'];
+                } else if (selectedKey === "kdrama") {
+                    modalIcon.innerHTML = `<img src="k-ramen.png" class="modal-icon-img" alt="Ramen">`;
+                    modalTitle.textContent = "¡Daebak! (대박) 🫰";
+                    modalDescription.textContent = `Una cena espectacular en UriMuri compartiendo un Ramen humeante.`;
+                    // "¡Hola! Me encantó la invitación!🫰. Elijo la cita estilo K-Drama y Ramen 🍜🇰🇷.  🫶"
+                    customMessage = "%C2%A1Hola!%20Me%20encant%C3%B3%20la%20invitaci%C3%B3n%20%F0%9F%A5%BA.%20Elijo%20la%20cita%20estilo%20K-Drama%20y%20Ramen%20%F0%9F%8D%9C%F0%9F%87%B0%F0%9F%87%B7.%20%C2%A1Coordinemos%20qu%C3%A9%20d%C3%ADa%20vamos!%20%F0%9F%AB%B6";
+                    colorConfetti = ['#A3B19B', '#2B3E50', '#FAF6F0'];
+                } else if (selectedKey === "karts") {
+                    modalIcon.innerHTML = `<img src="kart.png" class="modal-icon-img" alt="Kart">`;
+                    modalTitle.textContent = "¡Acelera a Fondo! 🏁";
+                    modalDescription.textContent = `Nos vamos directo a tomar el volante en la pista de Superkarts Unicentro.`;
+                    // "¡Hola! Me encantó la invitación 🏎️. Elijo la carrera de Karts en Superkarts Unicentro 🏁. ¡Prepárate para perder! 😉"
+                    customMessage = "%C2%A1Hola!%20Me%20encant%C3%B3%20la%20invitaci%C3%B3n%20%F0%9F%8F%8E%EF%B8%8F.%20Elijo%20la%20carrera%20de%20Karts%20en%20Superkarts%20Unicentro%20%F0%9F%8F%81.%20%C2%A1Prep%C3%A1rate%20para%20perder!%20%F0%9F%98%89";
+                    colorConfetti = ['#F7D070', '#2B3E50', '#D4A297'];
+                } else if (selectedKey === "minigolf") {
+                    modalIcon.innerHTML = `<img src="minigolf.png" class="modal-icon-img" alt="Minigolf">`;
+                    modalTitle.textContent = "¡Hoyo en Uno! 🏌️‍♀️";
+                    modalDescription.textContent = `Desatamos risas y precisión en South Park Cali. ¿Quién pagará los helados?`;
+                    // "¡Hola! Me encantó la invitación ⛳. Elijo el torneo de Minigolf 🏌️‍♀️. ¡Que empiece el juego! ✨"
+                    customMessage = "%C2%A1Hola!%20Me%20encant%C3%B3%20la%20invitaci%C3%B3n%20%E2%9B%B3%EF%B8%8F.%20Elijo%20el%20torneo%20de%20Minigolf%20%F0%9F%8F%8C%EF%B8%8F%E2%80%8D%E2%99%80%EF%B8%8F.%20%C2%A1Que%20empiece%20el%20juego!%20%E2%9C%A8";
+                    colorConfetti = ['#A2C2CF', '#2B3E50', '#FAF6F0'];
+                } else if (selectedKey === "salsa") {
+                    modalIcon.innerHTML = `<img src="cali_date_doodles_watercolor.png" class="modal-icon-img" alt="Maracas y Lulo">`;
+                    modalTitle.textContent = "¡Azúcar y Sabor! 💃";
+                    modalDescription.textContent = `Iniciamos con nuestras cerámicas y luego nos vamos de 'Agua e' lulo' con clase de salsa y cocteles.`;
+                    // "¡Hola! Me encantó la invitación 💃. Elijo pintar nuestras cerámicas + clase de salsa en Lulo Bar 🍹. ¡Alista los pasos prohibidos! 🎉"
+                    customMessage = "%C2%A1Hola!%20Me%20encant%C3%B3%20la%20invitaci%C3%B3n%20%F0%9F%92%83.%20Elijo%20pintar%20nuestras%20cer%C3%A1micas%20%2B%20clase%20de%20salsa%20en%20Lulo%20Bar%20%F0%9F%8D%B9.%20%C2%A1Alista%20los%20pasos%20prohibidos!%20%F0%9F%8E%89";
+                    colorConfetti = ['#D4A297', '#2B3E50', '#EAE3D2'];
+                }
+            } else {
+                modalIcon.innerHTML = `⚗️`;
+                modalTitle.textContent = "¡Fórmula Perfecta! ✨";
+                modalDescription.textContent = `Has combinado varios planes increíbles para una aventura épica.`;
+                const textoCitas = encodeURIComponent(selectedCards.map(c => c.getAttribute('data-label')).join(', '));
+                customMessage = `%C2%A1Hola!%20%E2%9A%97%EF%B8%8F%E2%9C%A8%20He%20sintetizado%20la%20f%C3%B3rmula%20perfecta%20para%20nuestra%20cita%3A%0A%0A-%20${textoCitas}%0A%0A%C2%A1Estoy%20lista!`;
+            }
             
-            // Construir el mensaje dinámico
-            const customMessage = `¡Hola! ⚗️✨ He sintetizado la fórmula perfecta para nuestra cita: ${selectedNames}. ¡Estoy lista! ❤️`;
+            // Configurar el número de destino 
+            // <-- RECUERDA PONER AQUÍ TU NÚMERO REAL CON CÓDIGO DE PAÍS (ej: 57311...)
+            const miNumero = "573117102114";
             
-            // Configurar el número de destino (reemplaza las X con tu número real)
-            const phoneNumber = "573117102114";
+            // El mensaje YA está codificado en formato URL de manera estricta, previniendo basura
+            const whatsappUrl = `https://api.whatsapp.com/send?phone=${miNumero}&text=${customMessage}`;
+            btnWhatsapp.href = whatsappUrl;
             
-            // Abrir enlace directamente en la misma ventana
-            const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(customMessage)}`;
-            window.location.href = whatsappUrl;
+            // Mostrar Modal
+            modalOverlay.classList.add('open');
+
+            confetti({
+                particleCount: 200,
+                spread: 90,
+                origin: { y: 0.6 },
+                colors: colorConfetti,
+                zIndex: 2000
+            });
         });
+
+        // Lógica para cerrar el modal
+        const closeModal = () => { modalOverlay.classList.remove('open'); };
+        btnCloseModal.addEventListener('click', closeModal);
+        modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) closeModal(); });
     </script>
 </body>
 </html>
