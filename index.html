@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuestra Próxima Aventura ✨</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root {
+            --bg-crema: #FAF6F0;
+            --txt-tinta: #2B3E50;
+            --terracota: #D4A297;
+            --matcha: #A3B19B;
+            --arena: #EAE3D2;
+            --azul-deporte: #A2C2CF;
+            --blanco: #FFFFFF;
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            --border-handdrawn: 3px solid var(--txt-tinta);
+            --shadow-handdrawn: 6px 6px 0px var(--txt-tinta);
+            --shadow-hover: 10px 10px 0px var(--txt-tinta);
+            --shadow-active: 2px 2px 0px var(--txt-tinta);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Quicksand', sans-serif;
+            color: var(--txt-tinta);
+        }
+
+        body {
+            background-color: var(--bg-crema);
+            background-image: radial-gradient(rgba(43, 62, 80, 0.15) 2px, transparent 2px);
+            background-size: 30px 30px;
+            padding: 3rem 1.2rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 2.5rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        header {
+            background: var(--blanco);
+            border: var(--border-handdrawn);
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            box-shadow: var(--shadow-handdrawn);
+            text-align: center;
+            position: relative;
+            transform: rotate(-1deg);
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%) rotate(2deg);
+            width: 120px;
+            height: 30px;
+            background-color: rgba(212, 162, 151, 0.6);
+            backdrop-filter: blur(2px);
+            border: 1px dashed rgba(43, 62, 80, 0.3);
+            z-index: 3;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+            letter-spacing: -0.5px;
+        }
+
+        header p {
+            font-size: 1.15rem;
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto;
+            font-weight: 600;
+        }
+
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            width: 100%;
+        }
+
+        .bento-card {
+            background: var(--blanco);
+            border: var(--border-handdrawn);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: var(--shadow-handdrawn);
+            transition: var(--transition);
+            position: relative;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 250px;
+        }
+
+        .bento-card:nth-child(1) { transform: rotate(-1.5deg); }
+        .bento-card:nth-child(2) { transform: rotate(2deg); }
+        .bento-card:nth-child(3) { transform: rotate(-1deg); }
+        .bento-card:nth-child(4) { transform: rotate(1.5deg); }
+        .bento-card:nth-child(5) { transform: rotate(-2deg); }
+
+        .bento-card::before {
+            content: '';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%) rotate(-4deg);
+            width: 80px;
+            height: 25px;
+            background-color: rgba(255, 255, 255, 0.7);
+            border: 1px dashed rgba(43, 62, 80, 0.2);
+            z-index: 10;
+        }
+        .bento-card:nth-child(even)::before {
+            transform: translateX(-50%) rotate(3deg);
+            background-color: rgba(163, 177, 155, 0.5);
+        }
+
+        .bento-card:hover {
+            transform: translateY(-8px) rotate(0deg) scale(1.02) !important;
+            box-shadow: var(--shadow-hover);
+            z-index: 10;
+        }
+
+        /* Hacemos que la tarjeta de cerámica ocupe dos columnas en desktop para mantener la cuadrícula con 5 elementos */
+        .card-full {
+            grid-column: span 2;
+        }
+
+        .card-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.2rem;
+        }
+
+        .card-tag {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            font-weight: 800;
+            letter-spacing: 1px;
+            background-color: var(--blanco);
+            padding: 0.4rem 1rem;
+            border-radius: 8px;
+            border: 2px solid var(--txt-tinta);
+            box-shadow: 2px 2px 0px var(--txt-tinta);
+        }
+
+        .bento-card h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            font-weight: 900;
+            margin-bottom: 0.6rem;
+        }
+
+        .bento-card p {
+            font-size: 1rem;
+            line-height: 1.5;
+            font-weight: 600;
+            opacity: 0.85;
+            margin-bottom: 1rem;
+        }
+
+        .card-ceramica { background-color: var(--arena); }
+        .card-kdrama { background-color: var(--matcha); }
+        .card-karts { background-color: #F7D070; }
+        .card-minigolf { background-color: var(--azul-deporte); }
+        .card-salsa { background-color: var(--terracota); }
+
+        .handwritten-note {
+            font-family: 'Caveat', cursive;
+            font-size: 1.6rem;
+            color: #E63946;
+            position: absolute;
+            z-index: 5;
+            font-weight: 700;
+            pointer-events: none;
+        }
+
+        /* Contenedor de las ilustraciones PNG */
+        .img-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: auto; /* Empuja la imagen hacia el fondo de la tarjeta */
+            height: 100px;
+        }
+
+        @keyframes floatIdle {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-6px) rotate(2deg); }
+        }
+
+        @keyframes bounceInImg {
+            0% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.25) rotate(5deg); }
+            100% { transform: scale(1.15) rotate(0deg); }
+        }
+
+        /* Estilos para las ilustraciones PNG tipo acuarela */
+        .watercolor-img {
+            max-height: 100%;
+            max-width: 130px;
+            object-fit: contain;
+            filter: drop-shadow(3px 4px 2px rgba(43, 62, 80, 0.15));
+            transition: var(--transition);
+            animation: floatIdle 3s ease-in-out infinite;
+            transform-origin: center bottom;
+        }
+
+        /* Animación suave al hacer hover sobre las tarjetas */
+        .bento-card:hover .watercolor-img {
+            animation: none;
+            transform: scale(1.15) rotate(3deg) translateY(-5px);
+        }
+        
+        .bento-card.selected .watercolor-img {
+            animation: bounceInImg 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        .bento-card.selected {
+            transform: scale(1.05) rotate(0deg) !important;
+            border-color: var(--txt-tinta);
+            box-shadow: 0px 0px 0px 4px var(--bg-crema), 0px 0px 0px 7px var(--txt-tinta);
+            z-index: 15;
+        }
+
+        .bento-card:active {
+            transform: translateY(2px) scale(0.98) !important;
+            box-shadow: var(--shadow-active);
+        }
+
+        /* ----- ELEMENTOS DE MAPA DEL TESORO (Fondo) ----- */
+        .adventure-bg {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+        .adventure-bg svg {
+            position: absolute;
+            opacity: 0.5;
+        }
+        .map-path {
+            width: 300px;
+            animation: dashDraw 12s linear infinite;
+        }
+        @keyframes dashDraw {
+            from { stroke-dashoffset: 100; }
+            to { stroke-dashoffset: 0; }
+        }
+        .map-x {
+            width: 50px;
+            animation: pulseX 2s infinite;
+        }
+        @keyframes pulseX {
+            0%, 100% { transform: scale(1) rotate(-10deg); }
+            50% { transform: scale(1.15) rotate(5deg); }
+        }
+        .map-sign {
+            width: 70px;
+            animation: swingSign 4s ease-in-out infinite;
+            transform-origin: 50% 100%;
+        }
+        @keyframes swingSign {
+            0%, 100% { transform: rotate(-5deg); }
+            50% { transform: rotate(5deg); }
+        }
+        .map-compass {
+            width: 110px;
+            animation: spinCompass 25s linear infinite;
+        }
+        @keyframes spinCompass {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .sticker-selected {
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            width: 50px;
+            height: 50px;
+            background-color: #FF5D73;
+            border: 3px solid var(--txt-tinta);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            transform: scale(0) rotate(-20deg);
+            transition: var(--transition);
+            opacity: 0;
+            box-shadow: 4px 4px 0px var(--txt-tinta);
+        }
+
+        .bento-card.selected .sticker-selected {
+            transform: scale(1) rotate(10deg);
+            opacity: 1;
+        }
+
+        .bento-grid.has-selection .bento-card:not(.selected):not(.card-full) {
+            opacity: 0.5;
+            filter: grayscale(40%) blur(1px);
+        }
+        
+        .bento-grid.has-selection .card-full:not(.selected) {
+            opacity: 0.5;
+            filter: grayscale(40%) blur(1px);
+        }
+
+        .rsvp-panel {
+            background: var(--blanco);
+            border: var(--border-handdrawn);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: var(--shadow-handdrawn);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+            position: relative;
+            transform: rotate(1deg);
+        }
+
+        .rsvp-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+        }
+
+        .btn-rsvp {
+            font-family: 'Quicksand', sans-serif;
+            font-weight: 800;
+            font-size: 1.2rem;
+            padding: 1.2rem 3rem;
+            border: var(--border-handdrawn);
+            border-radius: 12px;
+            background-color: var(--terracota);
+            cursor: pointer;
+            box-shadow: var(--shadow-handdrawn);
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            opacity: 0.5;
+            pointer-events: none;
+            color: var(--txt-tinta);
+        }
+
+        .btn-rsvp.active {
+            opacity: 1;
+            pointer-events: auto;
+            background-color: #FFD6A5;
+            animation: pulseBtn 2s infinite;
+        }
+
+        @keyframes pulseBtn {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        .btn-rsvp:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .btn-rsvp:active {
+            transform: translate(4px, 4px);
+            box-shadow: var(--shadow-active);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(43, 62, 80, 0.4);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 1000;
+            padding: 1.2rem;
+        }
+
+        .modal-overlay.open { opacity: 1; pointer-events: auto; }
+
+        .modal {
+            border: var(--border-handdrawn);
+            border-radius: 24px;
+            padding: 3rem 2rem;
+            max-width: 480px;
+            width: 100%;
+            box-shadow: 12px 12px 0px var(--txt-tinta);
+            transform: translateY(50px) rotate(-2deg);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-align: center;
+            position: relative;
+            background: var(--blanco);
+        }
+
+        .modal-overlay.open .modal {
+            transform: translateY(0) rotate(0deg);
+        }
+
+        .modal-icon-container {
+            width: 90px;
+            height: 90px;
+            background-color: var(--blanco);
+            border: var(--border-handdrawn);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: -70px auto 1.5rem auto;
+            box-shadow: 4px 4px 0px var(--txt-tinta);
+            font-size: 3rem;
+            overflow: hidden; /* Por si ponemos una imagen en el icono */
+        }
+        
+        .modal-icon-img {
+            max-width: 70%;
+            max-height: 70%;
+            object-fit: contain;
+        }
+
+        .modal h2 { font-family: 'Playfair Display', serif; font-size: 2rem; margin-bottom: 1rem; font-weight: 900;}
+        .modal p { font-size: 1.1rem; line-height: 1.6; margin-bottom: 2rem; font-weight: 600; }
+
+        .btn-whatsapp {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            background-color: #B7E4C7;
+            color: var(--txt-tinta);
+            padding: 1.2rem 2.5rem;
+            border-radius: 12px;
+            border: var(--border-handdrawn);
+            font-weight: 800;
+            font-size: 1.1rem;
+            text-decoration: none;
+            box-shadow: var(--shadow-handdrawn);
+            transition: var(--transition);
+        }
+
+        .btn-whatsapp:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); }
+        .btn-whatsapp:active { transform: translate(4px, 4px); box-shadow: var(--shadow-active); }
+        .close-modal { position: absolute; top: 15px; right: 15px; background: none; border: none; cursor: pointer; padding: 5px; }
+
+        @media (max-width: 768px) {
+            .bento-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+            .card-full { grid-column: span 1; }
+            h1 { font-size: 2rem; }
+            body { padding: 1.5rem 1rem; }
+            .bento-card { min-height: 200px; padding: 1.5rem; }
+            
+            .rsvp-panel {
+                position: sticky;
+                bottom: 20px;
+                z-index: 50;
+                padding: 1.5rem 1rem;
+                transform: none;
+            }
+            .handwritten-note { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Elementos de Mapa del Tesoro / Aventura en el fondo -->
+    <div class="adventure-bg">
+        <!-- Camino punteado 1 -->
+        <svg class="map-path" viewBox="0 0 200 100" style="top: 15%; left: -2%;">
+            <path d="M0,50 Q50,0 100,50 T200,50" fill="none" stroke="var(--terracota)" stroke-width="3" stroke-linecap="round" stroke-dasharray="6,8" />
+        </svg>
+        <!-- Camino punteado 2 -->
+        <svg class="map-path" viewBox="0 0 200 100" style="top: 60%; right: -5%; transform: rotate(35deg);">
+            <path d="M0,80 Q50,20 100,80 T200,80" fill="none" stroke="var(--azul-deporte)" stroke-width="3" stroke-linecap="round" stroke-dasharray="6,8" />
+        </svg>
+        <!-- X marca el lugar -->
+        <svg class="map-x" viewBox="0 0 100 100" style="bottom: 15%; left: 8%;">
+            <line x1="20" y1="20" x2="80" y2="80" stroke="#E63946" stroke-width="8" stroke-linecap="round"/>
+            <line x1="80" y1="20" x2="20" y2="80" stroke="#E63946" stroke-width="8" stroke-linecap="round"/>
+        </svg>
+        <!-- Señal de vía -->
+        <svg class="map-sign" viewBox="0 0 100 100" style="top: 35%; right: 4%;">
+            <rect x="45" y="40" width="10" height="60" fill="var(--txt-tinta)" />
+            <polygon points="10,20 70,20 90,30 70,40 10,40" fill="#F7D070" stroke="var(--txt-tinta)" stroke-width="3" stroke-linejoin="round"/>
+            <circle cx="20" cy="30" r="4" fill="var(--txt-tinta)"/>
+        </svg>
+        <!-- Brújula (Rosa de los vientos) -->
+        <svg class="map-compass" viewBox="0 0 100 100" style="top: 8%; right: 12%;">
+            <circle cx="50" cy="50" r="40" fill="none" stroke="var(--txt-tinta)" stroke-width="2" stroke-dasharray="4,4"/>
+            <polygon points="50,15 58,42 50,50 42,42" fill="#FF5D73"/>
+            <polygon points="50,85 58,58 50,50 42,58" fill="var(--txt-tinta)"/>
+            <polygon points="85,50 58,58 50,50 58,42" fill="var(--matcha)"/>
+            <polygon points="15,50 42,58 50,50 42,42" fill="var(--txt-tinta)"/>
+            <circle cx="50" cy="50" r="6" fill="var(--bg-crema)" stroke="var(--txt-tinta)" stroke-width="2"/>
+        </svg>
+    </div>
+
+    <div class="container">
+        <header>
+            <span class="handwritten-note" style="top: -25px; right: 20px; transform: rotate(10deg);">¡Sorpresa! 💌</span>
+            <h1>Nuestra Próxima Aventura ✨</h1>
+            <p>Es hora de continuar nuestra bitácora. Aquí tienes varias opciones para hoy... <br><span class="highlight-text">¡Tú eliges el rumbo!</span></p>
+        </header>
+
+        <div class="bento-grid" id="bentoGrid">
+            
+            <!-- Opción 1: Cerámicas (Ahora es una opción seleccionable) -->
+            <div class="bento-card card-full card-ceramica" data-option="ceramica" data-label="Terminar Cerámicas 🏺">
+                <div class="sticker-selected"><i data-lucide="heart"></i></div>
+                <div class="card-header-row">
+                    <span class="card-tag">Opción 1: Arte</span>
+                    <i data-lucide="palette"></i>
+                </div>
+                <div>
+                    <h2>La Obra Maestra Inconclusa</h2>
+                    <p>Vamos al taller a darle los toques finales a nuestras piezas de cerámica. ¡Descubramos cómo quedaron tras el horno!</p>
+                </div>
+                <div class="img-container">
+                    <img src="vacaydrag.png" alt="Dragón y Vaca" class="watercolor-img">
+                </div>
+            </div>
+
+            <!-- Opción 2: K-Drama / Ramen -->
+            <div class="bento-card card-kdrama" data-option="kdrama" data-label="K-Vibe en UriMuri 🇰🇷">
+                <div class="sticker-selected"><i data-lucide="heart"></i></div>
+                <span class="handwritten-note" style="bottom: 20px; right: 80px; transform: rotate(-15deg); color: #2B3E50;">Tengo antojo 🍜</span>
+                <div class="card-header-row">
+                    <span class="card-tag">Opción 2: Cena</span>
+                    <i data-lucide="soup"></i>
+                </div>
+                <div>
+                    <h2>Una Noche en Seúl</h2>
+                    <p>Para sentirnos dentro de tu K-drama favorito en UriMuri.</p>
+                </div>
+                <div class="img-container">
+                    <img src="k-ramen.png" alt="Ramen" class="watercolor-img">
+                </div>
+            </div>
+
+            <!-- Opción 3: Karts / F1 -->
+            <div class="bento-card card-karts" data-option="karts" data-label="Adrenalina de Karts 🏎️">
+                <div class="sticker-selected"><i data-lucide="heart"></i></div>
+                <div class="card-header-row">
+                    <span class="card-tag">Opción 3: Velocidad</span>
+                    <i data-lucide="gauge"></i>
+                </div>
+                <div>
+                    <h2>Karts en Unicentro</h2>
+                    <p>Adrenalina y competencia sana en la pista de Superkarts.</p>
+                </div>
+                <div class="img-container">
+                    <img src="kart.png" alt="Kart" class="watercolor-img">
+                </div>
+            </div>
+
+            <!-- Opción 4: Minigolf -->
+            <div class="bento-card card-minigolf" data-option="minigolf" data-label="Torneo de Minigolf ⛳">
+                <div class="sticker-selected"><i data-lucide="heart"></i></div>
+                <span class="handwritten-note" style="top: 20px; right: 20px; transform: rotate(15deg); color: #FFFFFF;">¿Apostamos? 🍦</span>
+                <div class="card-header-row">
+                    <span class="card-tag">Opción 4: Precisión</span>
+                    <i data-lucide="flag"></i>
+                </div>
+                <div>
+                    <h2>Torneo de Minigolf</h2>
+                    <p>18 hoyos de risas en South Park para decidir quién invita el postre.</p>
+                </div>
+                <div class="img-container">
+                    <!-- REEMPLAZA EL SRC CON LA RUTA A TU IMAGEN PNG DE MINIGOLF -->
+                    <img src="minigolf.png" alt="Minigolf" class="watercolor-img">
+                </div>
+            </div>
+
+            <!-- Opción 5: Salsa & Lulo Bar -->
+            <div class="bento-card card-salsa" data-option="salsa" data-label="Salsa & Lulo Bar 💃">
+                <div class="sticker-selected"><i data-lucide="heart"></i></div>
+                <div class="card-header-row">
+                    <span class="card-tag">Opción 5: Ritmo</span>
+                    <i data-lucide="music"></i>
+                </div>
+                <div>
+                    <h2>Salsa & Lulo Bar</h2>
+                    <p>Clase de salsa para acoplarnos al compás y cerramos con cocteles en Lulo Bar.</p>
+                </div>
+                <div class="img-container">
+                    <img src="cali_date_doodles_watercolor.png" alt="Maracas y Lulo" class="watercolor-img">
+                </div>
+            </div>
+
+        </div>
+
+        <div class="rsvp-panel">
+            <h3 class="rsvp-title" id="rsvpPrompt">Selecciona una tarjeta para continuar 👆</h3>
+            <button class="btn-rsvp" id="btnRsvp">
+                <span>Confirmar Aventura</span>
+                <i data-lucide="send"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal removido: el botón ahora redirige directamente a WhatsApp -->
+
+    <script>
+        lucide.createIcons();
+
+        const cards = document.querySelectorAll('.bento-card[data-option]');
+        const bentoGrid = document.getElementById('bentoGrid');
+        const btnRsvp = document.getElementById('btnRsvp');
+        const rsvpPrompt = document.getElementById('rsvpPrompt');
+
+        const triggerMiniConfetti = (e) => {
+            const rect = e.target.closest('.bento-card').getBoundingClientRect();
+            const x = (rect.left + rect.width / 2) / window.innerWidth;
+            const y = (rect.top + rect.height / 2) / window.innerHeight;
+            
+            confetti({
+                particleCount: 30,
+                spread: 50,
+                origin: { x, y },
+                colors: ['#FF5D73', '#FFD6A5', '#B7E4C7'],
+                disableForReducedMotion: true
+            });
+        };
+
+        cards.forEach(card => {
+            card.addEventListener('click', (e) => {
+                // Habilitar selección múltiple (activa/desactiva)
+                card.classList.toggle('selected');
+                
+                if (card.classList.contains('selected')) {
+                    triggerMiniConfetti(e);
+                }
+
+                // Obtener todas las tarjetas seleccionadas
+                const selectedCards = Array.from(document.querySelectorAll('.bento-card.selected'));
+
+                if (selectedCards.length > 0) {
+                    bentoGrid.classList.add('has-selection');
+                    btnRsvp.classList.add('active');
+                    
+                    const titles = selectedCards.map(c => c.getAttribute('data-label')).join(' + ');
+                    rsvpPrompt.innerHTML = `¡Has elegido <strong>${titles}</strong>! ✨`;
+                    
+                    if (window.innerWidth <= 768) {
+                        setTimeout(() => {
+                            btnRsvp.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }, 300);
+                    }
+                } else {
+                    bentoGrid.classList.remove('has-selection');
+                    btnRsvp.classList.remove('active');
+                    rsvpPrompt.textContent = 'Selecciona una tarjeta para continuar 👆';
+                }
+            });
+        });
+
+        btnRsvp.addEventListener('click', () => {
+            const selectedCards = Array.from(document.querySelectorAll('.bento-card.selected'));
+            if (selectedCards.length === 0) return;
+
+            // Extraer los nombres de las tarjetas seleccionadas
+            const selectedNames = selectedCards.map(c => c.getAttribute('data-label')).join(', ');
+            
+            // Construir el mensaje dinámico
+            const customMessage = `¡Hola! ⚗️✨ He sintetizado la fórmula perfecta para nuestra cita: ${selectedNames}. ¡Estoy lista! ❤️`;
+            
+            // Configurar el número de destino (reemplaza las X con tu número real)
+            const phoneNumber = "573117102114";
+            
+            // Abrir enlace directamente en la misma ventana
+            const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(customMessage)}`;
+            window.location.href = whatsappUrl;
+        });
+    </script>
+</body>
+</html>
